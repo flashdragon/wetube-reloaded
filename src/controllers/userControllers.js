@@ -49,17 +49,19 @@ export const postLogin = async (req, res) => {
     const user = await User.findOne({ username });
     if (!user) {
         return res.status(400).render("login", {
-            pageTile,
+            pageTitle,
             errorMessage: "An account with this username does not exists."
         })
     }
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) {
         return res.status(400).render("login", {
-            pageTile,
+            pageTitle,
             errorMessage: "Wrong password."
         })
     }
+    req.session.loggedIn = true;
+    req.session.user = user;
     console.log("LOG USER IN! COMING SOON.");
     return res.redirect("/");
 };
